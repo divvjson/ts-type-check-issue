@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Company {
+  id          Int          @id @default(autoincrement())
+  name        String
+  departments Department[]
+}
+
+model Department {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  teams Team[]
+
+  @@index([companyId])
+}
+
+model Team {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  employees Employee[]
+
+  @@index([departmentId])
+}
+
+model Employee {
+  id       Int    @id @default(autoincrement())
+  fullName String
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id])
+
+  payrollProfiles PayrollProfile[]
+
+  @@index([teamId])
+}
+
+model PayrollProfile {
+  id        Int      @id @default(autoincrement())
+  taxTable  String
+  iban      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+}
