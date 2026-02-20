@@ -36,6 +36,9 @@ export async function getPayrollProfile(id: number) {
     },
     select: {
       iban: true,
+      // Commenting out above (iban: true) at LEVEL 0 will show an error when we setPayrollProfiles in page.tsx.
+      // Why? The inferred return type of getPayrollProfiles and getPayrollProfile no longer match.
+      // This is expected.
       employee: {
         select: {
           team: {
@@ -45,8 +48,9 @@ export async function getPayrollProfile(id: number) {
                   company: {
                     select: {
                       name: true,
-                      // Commenting out above should generate a TS error in page.tsx when we setPayrollProfiles.
+                      // Commenting out above (name: true) LEVEL 4 should show an error when we setPayrollProfiles in page.tsx.
                       // Why? The inferred return type of getPayrollProfiles and getPayrollProfile no longer match.
+                      // However no error is shown, this is not expected. 🪲?
                     }
                   }
                 }
