@@ -2,20 +2,19 @@
 
 import { prisma } from '@/lib/prisma';
 
-
-export async function getCompanies() {
-  const companies = await prisma.company.findMany({
+export async function getPayrollProfiles() {
+  const payrollProfiles = await prisma.payrollProfile.findMany({
     select: {
-      name: true,
-      departments: {
+      iban: true,
+      employee: {
         select: {
-          teams: {
+          team: {
             select: {
-              employees: {
+              department: {
                 select: {
-                  payrollProfiles: {
+                  company: {
                     select: {
-                      iban: true,
+                      name: true,
                     }
                   }
                 }
@@ -27,27 +26,27 @@ export async function getCompanies() {
     }
   });
 
-  return companies;
+  return payrollProfiles;
 }
 
-export async function getCompany(id: number) {
-  const company = await prisma.company.findUnique({
+export async function getPayrollProfile(id: number) {
+  const payrollProfile = await prisma.payrollProfile.findUnique({
     where: {
-      id,
+      id
     },
     select: {
-      name: true,
-      departments: {
+      iban: true,
+      employee: {
         select: {
-          teams: {
+          team: {
             select: {
-              employees: {
+              department: {
                 select: {
-                  payrollProfiles: {
+                  company: {
                     select: {
-                      // iban: true, 
-                      // Commenting above out should generate a TS error in page.tsx when we setCompanies.
-                      // Why? The inferred return type of getCompanies and getCompany are no longer compatible.
+                      name: true,
+                      // Commenting out above should generate a TS error in page.tsx when we setPayrollProfiles.
+                      // Why? The inferred return type of getPayrollProfiles and getPayrollProfile no longer match.
                     }
                   }
                 }
@@ -59,5 +58,5 @@ export async function getCompany(id: number) {
     }
   });
 
-  return company;
+  return payrollProfile;
 }
